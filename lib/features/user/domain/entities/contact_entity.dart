@@ -21,10 +21,10 @@ class ContactEntity {
   final Uint8List? userProfile;
 
   ContactEntity({
-    required this.label,
-    required this.uid,
-    required this.status,
-    required this.userProfile,
-    required this.phoneNumber,
+     this.label,
+     this.uid,
+     this.status,
+     this.userProfile,
+     this.phoneNumber,
   });
 }
