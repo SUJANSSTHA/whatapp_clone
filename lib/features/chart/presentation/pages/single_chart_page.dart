@@ -1,11 +1,7 @@
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sound/public/flutter_sound_recorder.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:swipe_to/swipe_to.dart';
 
