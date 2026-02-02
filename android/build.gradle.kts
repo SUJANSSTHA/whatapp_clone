@@ -4,6 +4,18 @@ allprojects {
         mavenCentral()
     }
 }
+//  namespace = "com.example.whatapp_clone.libraryname"
+subprojects {
+    afterEvaluate {
+        if (it.plugins.hasPlugin("com.android.library")) {
+            it.android {
+                if (!it.namespace.isPresent) {
+                    it.namespace = "com.example.whatapp_clone"
+                }
+            }
+        }
+    }
+}
 
 val newBuildDir: Directory =
     rootProject.layout.buildDirectory

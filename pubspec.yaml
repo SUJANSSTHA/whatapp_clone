@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   bloc: ^8.1.0
+  equatable: ^2.0.8
   timeago: ^3.6.0
   emoji_picker_flutter: ^2.0.0
   flutter_sound: ^9.13.0
@@ -58,7 +59,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-  equatable: ^2.0.8
+ 
   get_it: ^9.2.0
   font_awesome_flutter: ^10.12.0
   fluttertoast: ^9.0.0

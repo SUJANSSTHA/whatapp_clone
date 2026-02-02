@@ -42,12 +42,6 @@ abstract class UserRepository {
   ///   - The UID of the currently authenticated user
   Future<String> getCurrentUID();
 
-  /// Create a new user in the database
-  /// 
-  /// Stores user information in Firestore after successful authentication
-  /// 
-  /// Parameters:
-  ///   - user: UserEntity object containing user details
   Future<void> createUser(UserEntity user);
 
   /// Update existing user information

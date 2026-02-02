@@ -1,16 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:whatapp_clone/features/user/domain/entities/user_entity.dart';
-import 'package:equatable/equatable.dart';
 class UserModel extends UserEntity {
 
+  @override
   final String? username;
   
 
+  @override
   final String? email;
+  @override
   final String? phoneNumber;
+  @override
   final bool? isOnline;
+  @override
   final String? uid;
+  @override
   final String? status;
+  @override
   final String? profileUrl;
 
   const UserModel({
