@@ -3,8 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:whatapp_clone/features/user/domain/usecases/credential/get_current_uid_usercase.dart';
 import 'package:whatapp_clone/features/user/domain/usecases/credential/is_sign_in_usercase.dart';
 import 'package:whatapp_clone/features/user/domain/usecases/credential/sign_out_usercase.dart';
-import 'package:whatapp_clone/features/user/domain/usecases/user/git_all_users_usercase.dart';
-
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {

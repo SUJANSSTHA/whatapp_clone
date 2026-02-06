@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:whatapp_clone/features/app/splash/splash_Screen.dart';
 import 'package:whatapp_clone/features/app/theme/style.dart';
 import 'package:whatapp_clone/routes/on_generate_routes.dart';
+import 'main_injection_container.dart' as di;
 
-void main() {
+void main() async{
+  await di.init();
   runApp(const MyApp());
 }
 
