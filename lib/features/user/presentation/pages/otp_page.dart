@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:whatapp_clone/features/app/theme/style.dart';
 import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
+import 'package:whatapp_clone/features/user/presentation/cubit/credential/credential_cubit.dart';
 import 'package:whatapp_clone/features/user/presentation/pages/inital_profile_submit_page.dart';
 
 class OtpPage extends StatefulWidget {
@@ -55,10 +57,11 @@ class _OtpPageState extends State<OtpPage> {
             ),
 
              GestureDetector(
-                    onTap: (){
-                      // Handle next button tap
-              Navigator.push(context, MaterialPageRoute(builder: (context) =>  const InitalProfileSubmitPage()));
-                    },
+              //       onTap: (){
+              //         // Handle next button tap
+              // // Navigator.push(context, MaterialPageRoute(builder: (context) =>  const InitalProfileSubmitPage()));
+              //       },
+              onTap: _submitSmsCode,
                     
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 20),
@@ -103,5 +106,14 @@ class _OtpPageState extends State<OtpPage> {
         ],
       ),
     );
+  }
+
+  void _submitSmsCode(){
+    print("otpCode ${_otpController.text}");
+    if(_otpController.text.isNotEmpty){
+      BlocProvider.of<CredentialCubit>(context)
+      .submitSmsCode(smsCode: _otpController.text);
+
+    }
   }
 }

@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:whatapp_clone/features/app/splash/splash_Screen.dart';
 import 'package:whatapp_clone/features/app/theme/style.dart';
+import 'package:whatapp_clone/firebase_options.dart';
 import 'package:whatapp_clone/routes/on_generate_routes.dart';
 import 'main_injection_container.dart' as di;
+import 'package:firebase_core/firebase_core.dart';
 
-void main() async{
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await di.init();
   runApp(const MyApp());
 }

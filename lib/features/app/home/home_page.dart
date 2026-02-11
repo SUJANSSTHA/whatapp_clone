@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
 import 'package:whatapp_clone/features/app/const/page_const.dart';
 import 'package:whatapp_clone/features/app/theme/style.dart';
 import 'package:whatapp_clone/features/call/presentation/pages/call_history_page.dart';
@@ -6,7 +8,11 @@ import 'package:whatapp_clone/features/chart/presentation/pages/chart_page.dart'
 import 'package:whatapp_clone/features/status/presentation/pages/status_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String uid;
+  const HomePage({
+    Key? key,
+    required this.uid,
+  }) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();

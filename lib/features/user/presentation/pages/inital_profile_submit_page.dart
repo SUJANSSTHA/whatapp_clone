@@ -1,16 +1,23 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:whatapp_clone/features/app/const/app_const.dart';
 import 'package:whatapp_clone/features/app/global/widgets/profile_widget.dart';
 import 'package:whatapp_clone/features/app/home/home_page.dart';
 import 'package:whatapp_clone/features/app/theme/style.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 /// [InitalProfileSubmitPage] is a stateful widget that allows users to set up
 /// their initial profile with a username and optional profile photo.
 /// This page is typically shown on the first app launch or during user onboarding.
 class InitalProfileSubmitPage extends StatefulWidget {
-  const InitalProfileSubmitPage({super.key});
+  final String phoneNumber;
+  const InitalProfileSubmitPage({
+    Key? key,
+    required this.phoneNumber,
+  }) : super(key: key);
 
   @override
   State<InitalProfileSubmitPage> createState() =>
@@ -132,12 +139,12 @@ class _InitalProfileSubmitPageState extends State<InitalProfileSubmitPage> {
               onTap: () {
                 // TODO: Add profile validation and save username + image before navigation
                 // Currently navigates to HomePage without submitting profile data
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomePage()
-                  ),(route) => false,
-                );
+                // Navigator.pushAndRemoveUntil(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => const HomePage()
+                //   ),(route) => false,
+                // );
               },
               child: Container(
                 width: 150,
