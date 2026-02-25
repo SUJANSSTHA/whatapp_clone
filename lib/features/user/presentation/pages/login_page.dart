@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
 );
   }
 
- _bodyWidget(){
+ Scaffold _bodyWidget(){
   return Scaffold(
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),

@@ -11,6 +11,7 @@ import 'package:whatapp_clone/features/user/domain/usecases/user/create_user_use
 import 'package:whatapp_clone/features/user/domain/usecases/user/get_single_user_usecase.dart';
 import 'package:whatapp_clone/features/user/domain/usecases/user/git_all_users_usercase.dart';
 import 'package:whatapp_clone/features/user/domain/usecases/user/update_user_usercase.dart';
+import 'package:whatapp_clone/features/user/domain/usecases/user/get_device_number_usercase.dart';
 import 'package:whatapp_clone/features/user/presentation/cubit/auth/auth_cubit.dart';
 import 'package:whatapp_clone/features/user/presentation/cubit/credential/credential_cubit.dart';
 import 'package:whatapp_clone/features/user/presentation/cubit/get_device_number/get_device_number_cubit.dart';
@@ -29,7 +30,7 @@ signOutUsercase: sl.call()
   ));
 
 sl.registerFactory<UserCubit>(()=> UserCubit(
-getAllUsersUsercase: sl.call(),
+getAllUsersUseCase: sl.call(),
 updateUserUseCase: sl.call(),
 ));
 
@@ -81,8 +82,8 @@ getDeviceNumberUsercase: sl.call(),
    sl.registerLazySingleton<GetSingleUserUsecase>(()=>
    GetSingleUserUsecase(repository: sl.call()));
 
-   
-   
+   sl.registerLazySingleton<GetDeviceNumberUsercase>(()=>
+   GetDeviceNumberUsercase(repository: sl.call()));
 
   // * RESPOSITORY AND DATA SOUCES INJECTION
   sl.registerLazySingleton<UserRepository>(

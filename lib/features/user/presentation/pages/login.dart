@@ -14,7 +14,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _phoneController = TextEditingController();
   late Country _selectedFilteredDialogCountry;
-  late String _countryCode;
+  late String _countryCode = '';
 
   @override
   void initState() {

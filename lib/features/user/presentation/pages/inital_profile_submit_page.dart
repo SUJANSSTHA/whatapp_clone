@@ -2,22 +2,27 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:whatapp_clone/features/app/const/app_const.dart';
 import 'package:whatapp_clone/features/app/global/widgets/profile_widget.dart';
-import 'package:whatapp_clone/features/app/home/home_page.dart';
+
 import 'package:whatapp_clone/features/app/theme/style.dart';
+import 'package:whatapp_clone/features/user/domain/entities/user_entity.dart';
+import 'package:whatapp_clone/features/user/presentation/cubit/credential/credential_cubit.dart';
+import 'package:whatapp_clone/storage/storage_provider.dart';
 
 /// [InitalProfileSubmitPage] is a stateful widget that allows users to set up
 /// their initial profile with a username and optional profile photo.
 /// This page is typically shown on the first app launch or during user onboarding.
 class InitalProfileSubmitPage extends StatefulWidget {
   final String phoneNumber;
+  
   const InitalProfileSubmitPage({
-    Key? key,
+    super.key,
     required this.phoneNumber,
-  }) : super(key: key);
+  });
 
   @override
   State<InitalProfileSubmitPage> createState() =>
@@ -29,26 +34,22 @@ class InitalProfileSubmitPage extends StatefulWidget {
 class _InitalProfileSubmitPageState extends State<InitalProfileSubmitPage> {
   /// Controller for managing the username input field
   final TextEditingController _usernameController = TextEditingController();
-
-  /// Stores the selected profile image file
-  /// Null if no image has been selected yet
   File? _image;
+  bool _isProfileUpdating = false;
 
-  /// Opens the device's image gallery and allows the user to select a profile photo
-  /// Updates [_image] with the selected file path
-  /// Shows error toast if image selection fails
+
   Future selectImage() async {
     try {
       // Request access to device gallery and get the selected image
-      final pickedImage = await ImagePicker.platform.getImageFromSource(
+      final pickedFile = await ImagePicker().pickImage(
         source: ImageSource.gallery,
       );
 
       // Update the UI with the selected image
       setState(() {
-        if (pickedImage != null) {
+        if (pickedFile != null) {
           // Convert the picked image path to a File object
-          _image = File(pickedImage.path);
+          _image = File(pickedFile.path);
         } else {
           // User canceled the image picker without selecting an image
           print("No image selected");
@@ -136,16 +137,17 @@ class _InitalProfileSubmitPageState extends State<InitalProfileSubmitPage> {
 
             // Submit button - navigates to HomePage after profile setup
             GestureDetector(
-              onTap: () {
-                // TODO: Add profile validation and save username + image before navigation
-                // Currently navigates to HomePage without submitting profile data
-                // Navigator.pushAndRemoveUntil(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => const HomePage()
-                //   ),(route) => false,
-                // );
-              },
+              // onTap: () {
+              //   // TODO: Add profile validation and save username + image before navigation
+              //   // Currently navigates to HomePage without submitting profile data
+              //   // Navigator.pushAndRemoveUntil(
+              //   //   context,
+              //   //   MaterialPageRoute(
+              //   //     builder: (context) => const HomePage()
+              //   //   ),(route) => false,
+              //   // );
+              // },
+              onTap: submitProfileInfo,
               child: Container(
                 width: 150,
                 height: 40,
@@ -170,5 +172,37 @@ class _InitalProfileSubmitPageState extends State<InitalProfileSubmitPage> {
         ),
       ),
     );
+  }
+  void submitProfileInfo() {
+    if(_image != null) {
+      StorageProviderRemoteDataSource.uploadProfileImage(
+          file: _image!,
+          onComplete: (onProfileUpdateComplete) {
+            setState(() {
+              _isProfileUpdating = onProfileUpdateComplete;
+            });
+          }
+      ).then((profileImageUrl) {
+        _profileInfo(
+            profileUrl: profileImageUrl
+        );
+      });
+    } else {
+      _profileInfo(profileUrl: "");
+    }
+  }
+
+  void _profileInfo({String? profileUrl}){
+    if(_usernameController.text.isNotEmpty){
+      BlocProvider.of<CredentialCubit>(context).submitProfileInfo(
+        user: UserEntity(
+          email: "",
+          username: _usernameController.text,
+          phoneNumber: widget.phoneNumber,
+          status: "Hey There! I'am using WhatsApp Clone",
+          isOnline: false,
+          profileUrl: profileUrl,
+        ));
+    }
   }
 }

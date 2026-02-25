@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:whatapp_clone/features/app/theme/style.dart';
 import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
 import 'package:whatapp_clone/features/user/presentation/cubit/credential/credential_cubit.dart';
-import 'package:whatapp_clone/features/user/presentation/pages/inital_profile_submit_page.dart';
 
 class OtpPage extends StatefulWidget {
   const OtpPage({super.key});

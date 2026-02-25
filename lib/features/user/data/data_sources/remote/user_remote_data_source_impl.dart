@@ -111,16 +111,30 @@ String _verificationId = "";
   @override
   Future<void> signInWithPhoneNumber(String smsPinCode) async {
     try {
-      // TODO: Implement sign-in logic with verification ID and SMS code
+      // Create phone auth credential using the verification ID and SMS code
+      final AuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: _verificationId,
+        smsCode: smsPinCode,
+      );
+      
+      // Sign in with the phone credential
+      await auth.signInWithCredential(credential);
+      print("Phone sign-in successful");
     } on FirebaseAuthException catch (e) {
       // Handle Firebase-specific authentication errors
       if (e.code == 'invalid-verification-code') {
         toast("Invalid Verification Code");
       } else if (e.code == 'quota-exceeded') {
         toast("SMS quota-exceeded");
+      } else if (e.code == 'session-expired') {
+        toast("SMS session expired. Please try again");
+      } else {
+        toast("Authentication failed: ${e.message}");
       }
+      print("Phone sign-in failed: ${e.code} - ${e.message}");
     } catch (e) {
       toast("Unknown exception please try again");
+      print("Unexpected error during sign-in: $e");
     }
   }
   /// Updates a user's profile information in Firestore.
@@ -160,11 +174,28 @@ String _verificationId = "";
     /// Callback invoked when phone verification is completed automatically (without user intervention)
     void phoneVerificationCompleted(AuthCredential authCredential) {
       print("Phone verified: Token ${authCredential.token}, Method: ${authCredential.signInMethod}");
+      // For auto-verified credentials, sign in directly
+      auth.signInWithCredential(authCredential).then((_) {
+        print("Auto sign-in successful");
+      }).catchError((e) {
+        print("Auto sign-in failed: $e");
+      });
     }
     
     /// Callback invoked when phone verification fails
     void phoneVerificationFailed(FirebaseAuthException firebaseAuthException) {
       print("Phone verification failed: ${firebaseAuthException.message}, Code: ${firebaseAuthException.code}");
+      
+      // Handle specific error codes
+      if (firebaseAuthException.code == 'invalid-phone-number') {
+        toast("Invalid phone number format");
+      } else if (firebaseAuthException.code == 'too-many-requests') {
+        toast("Too many verification attempts. Please try again later");
+      } else if (firebaseAuthException.code.contains('captcha')) {
+        toast("reCAPTCHA verification failed. Please check your internet and try again");
+      } else {
+        toast("Phone verification failed: ${firebaseAuthException.message}");
+      }
     }
 
     /// Callback invoked when auto-retrieval of SMS code times out
@@ -177,16 +208,23 @@ String _verificationId = "";
     void phoneCodeSent(String verificationId, int? forceResendingToken) {
       _verificationId = verificationId;
       print("SMS code sent. Verification ID: $verificationId");
+      // Note: On web platform, you may need to handle reCAPTCHA manually
     }
     
-    // Initiate phone number verification
-    await auth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: phoneVerificationCompleted, 
-      verificationFailed: phoneVerificationFailed,
-      timeout: const Duration(seconds: 60),
-      codeSent: phoneCodeSent,
-      codeAutoRetrievalTimeout: phoneCodeAutoRetrievalTimeout,
-    );
+    try {
+      // Note: On web, ensure reCAPTCHA container is properly set up
+      // Initiate phone number verification
+      await auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: phoneVerificationCompleted, 
+        verificationFailed: phoneVerificationFailed,
+        timeout: const Duration(seconds: 60),
+        codeSent: phoneCodeSent,
+        codeAutoRetrievalTimeout: phoneCodeAutoRetrievalTimeout,
+      );
+    } catch (e) {
+      print("Error during verifyPhoneNumber: $e");
+      toast("Failed to send verification code. Please try again");
+    }
   }
 }

@@ -7,10 +7,10 @@ allprojects {
 //  namespace = "com.example.whatapp_clone.libraryname"
 subprojects {
     afterEvaluate {
-        if (it.plugins.hasPlugin("com.android.library")) {
-            it.android {
-                if (!it.namespace.isPresent) {
-                    it.namespace = "com.example.whatapp_clone"
+        if (project.plugins.hasPlugin("com.android.library")) {
+            extensions.configure<com.android.build.gradle.LibraryExtension> {
+                if (namespace == null) {
+                    namespace = "com.example.whatapp_clone"
                 }
             }
         }

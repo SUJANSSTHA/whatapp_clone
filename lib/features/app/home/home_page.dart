@@ -10,9 +10,9 @@ import 'package:whatapp_clone/features/status/presentation/pages/status_page.dar
 class HomePage extends StatefulWidget {
   final String uid;
   const HomePage({
-    Key? key,
+    super.key,
     required this.uid,
-  }) : super(key: key);
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage>
                 color: appBarColor,
                 onSelected: (String value) {
                   if (value == 'Settings') {
-                    Navigator.pushNamed(context, PageConst.settingsPage);
+                    Navigator.pushNamed(context, PageConst.settingsPage, arguments:widget.uid );
                   }
                 },
                 itemBuilder: (context) => <PopupMenuEntry<String>>[

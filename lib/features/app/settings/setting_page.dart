@@ -1,62 +1,141 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:whatapp_clone/features/app/const/page_const.dart';
 import 'package:whatapp_clone/features/app/global/widgets/profile_widget.dart';
 import 'package:whatapp_clone/features/app/theme/style.dart';
+import 'package:whatapp_clone/features/user/domain/entities/user_entity.dart';
+import 'package:whatapp_clone/features/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 
 class SettingPage extends StatefulWidget {
-  const SettingPage({super.key});
+  final String uid;
+   const SettingPage({
+    super.key,
+    required this.uid,
+  });
 
   @override
   State<SettingPage> createState() => _SettingPageState();
 }
 
 class _SettingPageState extends State<SettingPage> {
+  
+
+
+  @override
+  void initState(){
+    BlocProvider.of<GetSingleUserCubit>(context).getSingleUser(uid: widget.uid);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Settings")),
       body: Column(
-  
         children: [
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            child: Row(
-              children: [
-                // *
-                SizedBox(
-                  height: 65,
-                  width: 65,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(32.5),
-                    child: profileWidget(),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    // mainAxisAlignment: MainAxisAlignment.start,
+            child: BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
+              builder: (context, state) {
+               if(state is GetSingleUserLoaded){
+                final UserEntity singleUser = state.singleUser;
+                 return Row(
                     children: [
-                      Text(
-                        "Username",
-                        style: TextStyle(
-                          // color: greyColor
-                          fontSize: 15,
+                      // *
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            PageConst.editProfilePage,arguments: singleUser
+                          );
+                        },
+                        child: SizedBox(
+                          height: 65,
+                          width: 65,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(32.5),
+                            child: profileWidget(
+                              imageUrl: singleUser.profileUrl,
+                            ),
+                          ),
                         ),
                       ),
-                      Text(
-                        "while true {code()}",
-                        style: TextStyle(color: greyColor),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          // mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${singleUser.username}",
+                              style: TextStyle(
+                                // color: greyColor
+                                fontSize: 15,
+                              ),
+                            ),
+                            Text(
+                              "${singleUser.status}",
+                              style: TextStyle(color: greyColor),
+                            ),
+                          ],
+                        ),
                       ),
+                      Icon(Icons.qr_code, color: tabColor, size: 30),
+                      // *
                     ],
-                  ),
-                ),
-                Icon(Icons.qr_code, color: tabColor, size: 30),
-                // *
-              ],
+                  );
+               }
+               
+                  return Row(
+                    children: [
+                      // *
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            PageConst.editProfilePage,
+                          );
+                        },
+                        child: SizedBox(
+                          height: 65,
+                          width: 65,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(32.5),
+                            child: profileWidget(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          // mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "...",
+                              style: TextStyle(
+                                // color: greyColor
+                                fontSize: 15,
+                              ),
+                            ),
+                            Text(
+                              "...",
+                              style: TextStyle(color: greyColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.qr_code, color: tabColor, size: 30),
+                      // *
+                    ],
+                  );
+                }
+              
             ),
           ),
           SizedBox(height: 2),
-          
+
           Divider(color: greyColor.withValues(alpha: 0.4), thickness: 0.4),
           SizedBox(height: 20),
           _settingItemWidget(
@@ -80,10 +159,9 @@ class _SettingPageState extends State<SettingPage> {
           _settingItemWidget(
             title: "Logout",
             desciption: "Logout from whatsApp clone",
-            icon: Icons.exit_to_app ,
+            icon: Icons.exit_to_app,
             onTap: () {},
           ),
-
         ],
       ),
     );
