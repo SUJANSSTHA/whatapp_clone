@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:whatapp_clone/features/app/const/page_const.dart';
+import 'package:whatapp_clone/features/app/global/widgets/dialog_widget.dart';
 import 'package:whatapp_clone/features/app/global/widgets/profile_widget.dart';
 import 'package:whatapp_clone/features/app/theme/style.dart';
 import 'package:whatapp_clone/features/user/domain/entities/user_entity.dart';
+import 'package:whatapp_clone/features/user/presentation/cubit/auth/auth_cubit.dart';
 import 'package:whatapp_clone/features/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 
 class SettingPage extends StatefulWidget {
@@ -160,7 +162,19 @@ class _SettingPageState extends State<SettingPage> {
             title: "Logout",
             desciption: "Logout from whatsApp clone",
             icon: Icons.exit_to_app,
-            onTap: () {},
+            onTap: () {
+              displayAlertDialog(
+                context,
+                onTap: () {
+                  // Navigator.pop(context);
+                  BlocProvider.of<AuthCubit>(context).loggedOut();
+                 Navigator.pushNamedAndRemoveUntil(context, PageConst.welcomePage, (route) => false);
+
+                },
+                confirmTitle: "Logout",
+                content: "Are you sure you want to logout?",
+              );
+            },
           ),
         ],
       ),

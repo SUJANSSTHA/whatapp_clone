@@ -232,6 +232,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   void submitProfileInfo() {
+    setState(() {
+      _isProfileUpdating = true;
+    });
     if (_image != null) {
       StorageProviderRemoteDataSource.uploadProfileImage(
           file: _image!,
@@ -261,7 +264,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
         profileUrl: profileUrl,
       ))
           .then((value) {
-        toast("Profile updated");
+        if (mounted) {
+          setState(() {
+            _isProfileUpdating = false;
+          });
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(content: Text("Update Profile")),
+          // );
+          toast("Profile Updated");
+          Navigator.pop(context);
+        }
       });
     }
   }

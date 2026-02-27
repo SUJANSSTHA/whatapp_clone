@@ -151,6 +151,9 @@ String _verificationId = "";
     if (user.username != "" && user.username != null) {
       userInfo['username'] = user.username;
     }
+    if (user.status != "" && user.status != null) {
+      userInfo['status'] = user.status;
+    }
     // Add profile URL if provided
     if (user.profileUrl != "" && user.profileUrl != null) {
       userInfo['profileUrl'] = user.profileUrl;
