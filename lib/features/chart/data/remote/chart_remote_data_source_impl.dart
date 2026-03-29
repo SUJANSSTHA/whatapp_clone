@@ -2,20 +2,21 @@ import 'package:whatapp_clone/features/chart/domain/entities/chat_entity.dart';
 
 import 'package:whatapp_clone/features/chart/domain/entities/message_enitiy.dart';
 
-import '../../domain/repositories/chart_repositories.dart';
-import '../remote/chart_remote_data_source.dart';
+import 'chart_remote_data_source.dart';
 
-class ChartRepositoryImpl implements ChatRepository {
-
-  final ChartRemoteDataSource remoteDataSource;
-
-  ChartRepositoryImpl({required this.remoteDataSource});
+class ChartRemoteDataSourceImpl implements ChartRemoteDataSource {
   
   @override
-  Future<void> deleteChat(ChatEntity chart) async=> remoteDataSource.deleteChat(chart);
+  Future<void> deleteChat(ChatEntity chart) {
+    // TODO: implement deleteChat
+    throw UnimplementedError();
+  }
 
   @override
-  Future<void> deleteMessage(MessageEntity message) async=> remoteDataSource.deleteMessage(message);
+  Future<void> deleteMessage(MessageEntity message) {
+    // TODO: implement deleteMessage
+    throw UnimplementedError();
+  }
 
   @override
   Stream<List<MessageEntity>> getMessages(MessageEntity message) {
@@ -34,6 +35,5 @@ class ChartRepositoryImpl implements ChatRepository {
     // TODO: implement sendMessage
     throw UnimplementedError();
   }
-  
-  
-  }
+ 
+}
