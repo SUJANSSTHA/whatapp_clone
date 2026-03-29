@@ -17,7 +17,7 @@ class OnGenerateRoutes{
     switch (name) {
       case PageConst.contactUsersPage:
         {
-          return materialPageBuilder(const ContactPage());
+          return materialPageBuilder(ContactsPage(uid: args as String,));
         }
       case PageConst.settingsPage:
         {

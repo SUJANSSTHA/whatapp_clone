@@ -6,7 +6,7 @@ import 'package:whatapp_clone/features/user/data/models/user_model.dart';
 import 'package:whatapp_clone/features/user/domain/entities/contact_entity.dart';
 import 'package:whatapp_clone/features/user/domain/entities/user_entity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:contacts_service/contacts_service.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   final FirebaseFirestore firestore;
@@ -62,25 +62,53 @@ String _verificationId = "";
   Future<String> getCurrentUID() async => auth.currentUser!.uid;
 
   @override
-  Future<List<ContactEntity>> getDeviceNumber() async {
-    List<ContactEntity> contacts = [];
+  // Future<List<ContactEntity>> getDeviceNumber() async {
+  //   List<ContactEntity> contacts = [];
 
-    final getContactsData = await ContactsService.getContacts();
+  //   if (await FlutterContacts.requestPermission()) {
+  //     final getContactsData = await FlutterContacts.getContacts(
+  //       withProperties: true, 
+  //       withPhoto: true,
+  //     );
 
-    for (var myContact in getContactsData) {
-      for (var phoneData in myContact.phones!) {
-        contacts.add(
-          ContactEntity(
-            phoneNumber: phoneData.value,
-            label: myContact.displayName,
-            //  uid: uid,
-            // status: status,
-            userProfile: myContact.avatar,
-          ),
+  //     for (var myContact in getContactsData) {
+  //       if (myContact.phones.isNotEmpty) {
+  //         for (var phoneData in myContact.phones) {
+  //           contacts.add(
+  //             ContactEntity(
+  //               phoneNumber: phoneData.number,
+  //               label: myContact.displayName,
+  //               //  uid: uid,
+  //               // status: status,
+  //               userProfile: myContact.photo,
+  //             ),
+  //           );
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return contacts;
+  // }
+
+    Future<List<ContactEntity>> getDeviceNumber() async {
+    List<ContactEntity> contactsList=[];
+
+    if(await FlutterContacts.requestPermission()) {
+      List<Contact> contacts = await FlutterContacts.getContacts(
+          withProperties: true, withPhoto: true);
+
+      for (var contact in contacts) {
+        contactsList.add(
+            ContactEntity(
+                name: contact.name,
+                photo: contact.photo,
+                phones: contact.phones
+            )
         );
       }
     }
-    return contacts;
+
+    return contactsList;
   }
   // * ---> getSingleUser
   @override

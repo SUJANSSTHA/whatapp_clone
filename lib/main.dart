@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.sl<UserCubit>()),
         BlocProvider(create: (context) => di.sl<GetDeviceNumberCubit>()),
       ],
-      child: MaterialApp(
+      child: MaterialApp(       
         title: 'Flutter Demo',
         theme: ThemeData.dark().copyWith(
           colorScheme: ColorScheme.fromSeed(
