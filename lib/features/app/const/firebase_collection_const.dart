@@ -6,7 +6,7 @@ class FirebaseCollectionConst {
   static const String oneToOneChartChannel = "oneToOneChartChannel";
   static const String chatChannel = "chatChannel";
   static const String myChat = "myChat";
-  static const String messenger = "messenger";
+  static const String messages = "messages";
 
 
   //status collection

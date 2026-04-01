@@ -35,5 +35,11 @@ class ChartRepositoryImpl implements ChatRepository {
     throw UnimplementedError();
   }
   
+  @override
+  Future<void> seenMessageUpdate(MessageEntity message) {
+    // TODO: implement seenMessageUpdate
+    throw UnimplementedError();
+  }
+  
   
   }

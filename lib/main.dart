@@ -11,6 +11,8 @@ import 'package:whatapp_clone/features/user/presentation/cubit/get_single_user/g
 import 'package:whatapp_clone/features/user/presentation/cubit/user/user_cubit.dart';
 import 'package:whatapp_clone/firebase_options.dart';
 import 'package:whatapp_clone/routes/on_generate_routes.dart';
+import 'features/chart/presentation/cubit/chat/chat_cubit.dart';
+import 'features/chart/presentation/cubit/message/message_cubit.dart';
 import 'main_injection_container.dart' as di;
 import 'package:firebase_core/firebase_core.dart';
 
@@ -34,6 +36,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.sl<GetSingleUserCubit>()),
         BlocProvider(create: (context) => di.sl<UserCubit>()),
         BlocProvider(create: (context) => di.sl<GetDeviceNumberCubit>()),
+        BlocProvider(create: (context) => di.sl<ChatCubit>()),
+        BlocProvider(create: (context) => di.sl<MessageCubit>()),
       ],
       child: MaterialApp(       
         title: 'Flutter Demo',

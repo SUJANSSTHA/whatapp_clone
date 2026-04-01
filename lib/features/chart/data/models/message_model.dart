@@ -4,20 +4,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:whatapp_clone/features/chart/domain/entities/message_enitiy.dart';
 class MessageModel extends MessageEntity {
 
+  @override
   final String? senderUid;
+  @override
   final String? recipientUid;
+  @override
   final String? senderName;
+  @override
   final String? recipientName;
+  @override
   final String? messageType;
+  @override
   final String? message;
+  @override
   final Timestamp? createdAt;
+  @override
   final bool? isSeen;
+  @override
   final String? repliedTo;
+  @override
   final String? repliedMessage;
+  @override
   final String? repliedMessageType;
+  @override
   final String? messageId;
 
-  MessageModel(
+  const MessageModel(
       {
         this.senderUid,
         this.recipientUid,

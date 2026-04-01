@@ -1,6 +1,9 @@
 
 
+import '../entities/chat_entity.dart';
 import '../repositories/chart_repositories.dart';
+
+
 
 class GetMyChatUseCase {
 
@@ -8,7 +11,7 @@ class GetMyChatUseCase {
 
   GetMyChatUseCase({required this.repository});
 
-  // Stream<List<ChatEntity>> call(ChatEntity chat)  {
-  //   // return repository.getMyChat(chat);
-  // }
+  Stream<List<ChatEntity>> call(ChatEntity chat)  {
+    return repository.getMyChart(chat);
+  }
 }

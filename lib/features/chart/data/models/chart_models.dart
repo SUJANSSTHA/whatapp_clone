@@ -4,19 +4,28 @@ import 'package:whatapp_clone/features/chart/domain/entities/chat_entity.dart';
 
 
 class ChartModel extends ChatEntity {
+  @override
   final String? senderUid;
+  @override
   final String? recipientUid;
+  @override
   final String? senderName;
+  @override
   final String? recipientName;
+  @override
   final String? recentTextMessage;
+  @override
   final Timestamp? createdAt;
+  @override
   final String? senderProfile;
+  @override
   final String? recipientProfile;
+  @override
   final num? totalUnReadMessages;
   
 
 
-    ChartModel({
+    const ChartModel({
     this.senderUid,
     this.recipientUid,
     this.senderName,
