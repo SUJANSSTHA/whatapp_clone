@@ -4,14 +4,17 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:swipe_to/swipe_to.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 // import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
 // import 'dart:io';
 // import 'package:flutter/material.dart';
 import 'package:whatapp_clone/features/app/theme/style.dart';
+import 'package:whatapp_clone/features/chart/domain/entities/message_enitiy.dart';
 
 class SingleChartPage extends StatefulWidget {
-  const SingleChartPage({super.key});
+  final MessageEntity message;
+  const SingleChartPage({super.key, required this.message});
 
   @override
   State<SingleChartPage> createState() => _SingleChartPageState();
@@ -38,7 +41,7 @@ class _SingleChartPageState extends State<SingleChartPage> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Username"),
+            Text("${widget.message.recipientName}"),
             Text(
               "Online",
               style: TextStyle(

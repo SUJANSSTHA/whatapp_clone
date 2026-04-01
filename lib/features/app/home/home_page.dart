@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage>
           // Center(child: Text("Chats Page")),
           // Center(child: Text("Status Page")),
           // Center(child: Text("Calls Page")),
-          ChartPage(),
+          ChartPage(uid: widget.uid,),
           StatusPage(),
           CallHistoryPage(),
         ],
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage>
           onPressed: () {
             // Navigator.push(context, MaterialPageRoute(builder: (context) => ContactPage()));
             //* contactUsersPage
-            Navigator.pushNamed(context, PageConst.contactUsersPage);
+            Navigator.pushNamed(context, PageConst.contactUsersPage,arguments: widget.uid);
           },
           backgroundColor: tabColor,
           child: const Icon(Icons.message, color: Colors.white),

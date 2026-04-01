@@ -3,37 +3,45 @@ import 'package:whatapp_clone/features/app/const/page_const.dart';
 import 'package:whatapp_clone/features/app/home/contact_page.dart';
 import 'package:whatapp_clone/features/app/settings/setting_page.dart';
 import 'package:whatapp_clone/features/call/presentation/pages/call_contact_page.dart';
+import 'package:whatapp_clone/features/chart/domain/entities/message_enitiy.dart';
 import 'package:whatapp_clone/features/chart/presentation/pages/single_chart_page.dart';
 import 'package:whatapp_clone/features/status/presentation/pages/my_status_page.dart';
 import 'package:whatapp_clone/features/user/domain/entities/user_entity.dart';
 import 'package:whatapp_clone/pages/edit_profile_page.dart';
 
-
-class OnGenerateRoutes{
-
+class OnGenerateRoutes {
   static Route<dynamic>? route(RouteSettings settings) {
-   final args = settings.arguments;
-   final name = settings.name;
+    final args = settings.arguments;
+    final name = settings.name;
     switch (name) {
       case PageConst.contactUsersPage:
         {
-          return materialPageBuilder(ContactsPage(uid: args as String,));
+          // return materialPageBuilder(ContactsPage(uid: args as String,));
+          if (args is String) {
+            return materialPageBuilder(ContactsPage(
+              uid: args,
+            ));
+          } else {
+            return materialPageBuilder(ErrorPage());
+          }
         }
       case PageConst.settingsPage:
         {
-          if(args is String){
-
-          return materialPageBuilder(SettingPage(uid: args,));
-          }else{
+          if (args is String) {
+            return materialPageBuilder(SettingPage(
+              uid: args,
+            ));
+          } else {
             return materialPageBuilder(ErrorPage());
           }
         }
       case PageConst.editProfilePage:
         {
-          if(args is UserEntity){
-
-          return materialPageBuilder(EditProfilePage(currentUser: args,));
-          }else{
+          if (args is UserEntity) {
+            return materialPageBuilder(EditProfilePage(
+              currentUser: args,
+            ));
+          } else {
             return materialPageBuilder(ErrorPage());
           }
         }
@@ -47,19 +55,26 @@ class OnGenerateRoutes{
         }
       case PageConst.singleChatPage:
         {
-          return materialPageBuilder(const SingleChartPage());
+            if (args is MessageEntity) {
+            return materialPageBuilder(SingleChartPage(message: args));
+          } else {
+            return materialPageBuilder(ErrorPage());
+          }
+         
         }
-        
+
       default:
         return null;
     }
   }
 }
+
 dynamic materialPageBuilder(Widget child) {
   return MaterialPageRoute(
     builder: (context) => child,
   );
 }
+
 class ErrorPage extends StatelessWidget {
   const ErrorPage({super.key});
 
