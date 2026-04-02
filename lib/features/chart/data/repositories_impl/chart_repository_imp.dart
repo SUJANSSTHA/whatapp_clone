@@ -19,26 +19,22 @@ class ChartRepositoryImpl implements ChatRepository {
 
   @override
   Stream<List<MessageEntity>> getMessages(MessageEntity message) {
-    // TODO: implement getMessages
-    throw UnimplementedError();
+    return remoteDataSource.getMessages(message);
   }
 
   @override
   Stream<List<ChatEntity>> getMyChart(ChatEntity chart) {
-    // TODO: implement getMyChart
-    throw UnimplementedError();
+    return remoteDataSource.getMyChart(chart);
   }
 
   @override
-  Future<void> sendMessage(ChatEntity chart, MessageEntity message) {
-    // TODO: implement sendMessage
-    throw UnimplementedError();
+  Future<void> sendMessage(ChatEntity chart, MessageEntity message) async {
+    return await remoteDataSource.sendMessage(chart, message);
   }
   
   @override
-  Future<void> seenMessageUpdate(MessageEntity message) {
-    // TODO: implement seenMessageUpdate
-    throw UnimplementedError();
+  Future<void> seenMessageUpdate(MessageEntity message) async {
+    return await remoteDataSource.seenMessageUpdate(message);
   }
   
   

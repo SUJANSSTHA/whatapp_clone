@@ -11,4 +11,5 @@ abstract class ChartRemoteDataSource {
   Stream<List<MessageEntity>> getMessages(MessageEntity message);
   Future<void> deleteMessage(MessageEntity message);
   Future<void> deleteChat(ChatEntity chart);
+  Future<void> seenMessageUpdate(MessageEntity message);
 }

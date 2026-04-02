@@ -1,6 +1,6 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:swipe_to/swipe_to.dart';
@@ -11,6 +11,7 @@ import 'package:flutter/src/widgets/framework.dart';
 // import 'package:flutter/material.dart';
 import 'package:whatapp_clone/features/app/theme/style.dart';
 import 'package:whatapp_clone/features/chart/domain/entities/message_enitiy.dart';
+import 'package:whatapp_clone/features/chart/presentation/cubit/message/message_cubit.dart';
 
 class SingleChartPage extends StatefulWidget {
   final MessageEntity message;
@@ -29,6 +30,14 @@ class _SingleChartPageState extends State<SingleChartPage> {
   void dispose() {
     _textMessageController.dispose();
     super.dispose();
+  }
+  @override
+  void initState() {
+    super.initState();
+       BlocProvider.of<MessageCubit>(context).getMessages(message: MessageEntity(
+      senderUid: widget.message.senderUid,
+      recipientUid: widget.message.recipientUid
+    ),);
   }
 
   @override
@@ -81,277 +90,320 @@ class _SingleChartPageState extends State<SingleChartPage> {
           SizedBox(width: 15),
         ],
       ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-          if (_isShowAttachWindow) {
-            setState(() => _isShowAttachWindow = false);
-          }
-        },
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(
-                "assets/whatsapp_bg_image.png",
-                fit: BoxFit.cover,
-              ),
-            ),
-            // main column with messages and input; add bottom padding for keyboard
-            Padding(
-              padding: EdgeInsets.only(bottom: bottomInset),
+      body: BlocBuilder<MessageCubit, MessageState>(
+        builder: (context, state) {
+          if (state is MessageFailure) {
+            return Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        _messageLayout(
-                          message: "Hello, how are you?",
-                          alignment: Alignment.centerRight,
-                          createAt: Timestamp.now(),
-                          isSeen: false,
-                          isShowTick: true,
-                          messageBgColor: messageColor,
-                          onLongPress: () {},
-                          onSwipe: () {},
-                        ),
-                        _messageLayout(
-                          message: "Hello, I am fine?",
-                          alignment: Alignment.centerLeft,
-                          createAt: Timestamp.now(),
-                          isSeen: false,
-                          isShowTick: true,
-                          messageBgColor: senderMessageColor,
-                          onLongPress: () {},
-                          onSwipe: () {},
-                        ),
-                        _messageLayout(
-                          message: "k gardai xas",
-                          alignment: Alignment.centerRight,
-                          createAt: Timestamp.now(),
-                          isSeen: false,
-                          isShowTick: true,
-                          messageBgColor: messageColor,
-                          onLongPress: () {},
-                          onSwipe: () {},
-                        ),
-                        _messageLayout(
-                          message: "Coding garira xu",
-                          alignment: Alignment.centerLeft,
-                          createAt: Timestamp.now(),
-                          isSeen: false,
-                          isShowTick: false,
-                          messageBgColor: senderMessageColor,
-                          onLongPress: () {},
-                          onSwipe: () {},
-                        ),
-                      ],
-                    ),
+                  Icon(Icons.error_outline, color: Colors.red, size: 60),
+                  SizedBox(height: 20),
+                  Text(
+                    'Error loading messages',
+                    style: TextStyle(color: textColor, fontSize: 16),
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(
-                      left: 10,
-                      right: 10,
-                      bottom: 10,
-                      top: 5,
-                    ),
-                    color: appBarColor,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: searchBarColor,
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            height: 50,
-                            child: TextField(
-                              onTap: () {
-                                if (_isShowAttachWindow) {
-                                  setState(() => _isShowAttachWindow = false);
-                                }
-                              },
-                              controller: _textMessageController,
-                              onChanged: (value) {
-                                if (value.isNotEmpty) {
-                                  setState(() {
-                                    _isDispalySendButton = true;
-                                  });
-                                } else {
-                                  setState(() {
-                                    _isDispalySendButton = false;
-                                  });
-                                }
-                              },
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 2,
-                                  vertical: 15,
-                                ),
-                                border: InputBorder.none,
-                                hintText: "message",
-                                prefixIcon: Icon(
-                                  Icons.emoji_emotions_outlined,
-                                  color: greyColor,
-                                ),
-                                suffixIcon: Wrap(
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        // toggle attach window and dismiss keyboard
-                                        FocusScope.of(context).unfocus();
-                                        setState(() {
-                                          _isShowAttachWindow = !_isShowAttachWindow;
-                                        });
-                                      },
-                                      icon: const Icon(
-                                        Icons.attach_file,
-                                        color: greyColor,
-                                        size: 25,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(
-                                        Icons.camera_alt,
-                                        color: greyColor,
-                                        size: 25,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      BlocProvider.of<MessageCubit>(context).getMessages(
+                        message: MessageEntity(
+                          senderUid: widget.message.senderUid,
+                          recipientUid: widget.message.recipientUid,
                         ),
-                        SizedBox(width: 10),
-                        Container(
-                          height: 45,
-                          width: 45,
-                          decoration: BoxDecoration(
-                            color: tabColor,
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Icon(
-                            _isDispalySendButton ? Icons.send : Icons.mic,
-                            color: whiteColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                      );
+                    },
+                    child: Text('Retry'),
                   ),
                 ],
               ),
-            ),
-            // attach window: show only when toggled and position above keyboard
-            if (_isShowAttachWindow)
-              Positioned(
-                right: 15,
-                left: 15,
-                bottom: 65 + bottomInset,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
-                    vertical: 15,
+            );
+          }
+          if (state is MessageLoaded) {
+            return GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+                if (_isShowAttachWindow) {
+                  setState(() => _isShowAttachWindow = false);
+                }
+              },
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Image.asset(
+                      "assets/whatsapp_bg_image.png",
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                  decoration: BoxDecoration(
-                    color: bottomAttachContainerColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: SingleChildScrollView(
+                  // main column with messages and input; add bottom padding for keyboard
+                  Padding(
+                    padding: EdgeInsets.only(bottom: bottomInset),
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Flexible(
-                              child: _attachWindowItem(
-                                icon: Icons.document_scanner,
-                                color: Colors.deepPurpleAccent,
-                                title: "Document",
+                        Expanded(
+                          child: ListView(
+                            children: [
+                              _messageLayout(
+                                message: "Hello, how are you?",
+                                alignment: Alignment.centerRight,
+                                createAt: Timestamp.now(),
+                                isSeen: false,
+                                isShowTick: true,
+                                messageBgColor: messageColor,
+                                onLongPress: () {},
+                                onSwipe: () {},
                               ),
-                            ),
-                            Flexible(
-                              child: _attachWindowItem(
-                                icon: Icons.camera_alt,
-                                color: Colors.pinkAccent,
-                                title: "Camera",
+                              _messageLayout(
+                                message: "Hello, I am fine?",
+                                alignment: Alignment.centerLeft,
+                                createAt: Timestamp.now(),
+                                isSeen: false,
+                                isShowTick: true,
+                                messageBgColor: senderMessageColor,
+                                onLongPress: () {},
+                                onSwipe: () {},
                               ),
-                            ),
-                            Flexible(
-                              child: _attachWindowItem(
-                                icon: Icons.insert_photo,
-                                color: Colors.purpleAccent,
-                                title: "Gallery",
+                              _messageLayout(
+                                message: "k gardai xas",
+                                alignment: Alignment.centerRight,
+                                createAt: Timestamp.now(),
+                                isSeen: false,
+                                isShowTick: true,
+                                messageBgColor: messageColor,
+                                onLongPress: () {},
+                                onSwipe: () {},
                               ),
-                            ),
-                          ],
+                              _messageLayout(
+                                message: "Coding garira xu",
+                                alignment: Alignment.centerLeft,
+                                createAt: Timestamp.now(),
+                                isSeen: false,
+                                isShowTick: false,
+                                messageBgColor: senderMessageColor,
+                                onLongPress: () {},
+                                onSwipe: () {},
+                              ),
+                            ],
+                          ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Flexible(
-                              child: _attachWindowItem(
-                                icon: Icons.headphones,
-                                color: Colors.deepOrange,
-                                title: "Audio",
+                        Container(
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                            bottom: 10,
+                            top: 5,
+                          ),
+                          color: appBarColor,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: searchBarColor,
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  height: 50,
+                                  child: TextField(
+                                    onTap: () {
+                                      if (_isShowAttachWindow) {
+                                        setState(
+                                            () => _isShowAttachWindow = false);
+                                      }
+                                    },
+                                    controller: _textMessageController,
+                                    onChanged: (value) {
+                                      if (value.isNotEmpty) {
+                                        setState(() {
+                                          _isDispalySendButton = true;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          _isDispalySendButton = false;
+                                        });
+                                      }
+                                    },
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 2,
+                                        vertical: 15,
+                                      ),
+                                      border: InputBorder.none,
+                                      hintText: "message",
+                                      prefixIcon: Icon(
+                                        Icons.emoji_emotions_outlined,
+                                        color: greyColor,
+                                      ),
+                                      suffixIcon: Wrap(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              // toggle attach window and dismiss keyboard
+                                              FocusScope.of(context).unfocus();
+                                              setState(() {
+                                                _isShowAttachWindow =
+                                                    !_isShowAttachWindow;
+                                              });
+                                            },
+                                            icon: const Icon(
+                                              Icons.attach_file,
+                                              color: greyColor,
+                                              size: 25,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                              Icons.camera_alt,
+                                              color: greyColor,
+                                              size: 25,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                            Flexible(
-                              child: _attachWindowItem(
-                                icon: Icons.location_on,
-                                color: Colors.green,
-                                title: "Location",
+                              SizedBox(width: 10),
+                              Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  color: tabColor,
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                child: Icon(
+                                  _isDispalySendButton ? Icons.send : Icons.mic,
+                                  color: whiteColor,
+                                ),
                               ),
-                            ),
-                            Flexible(
-                              child: _attachWindowItem(
-                                icon: Icons.account_circle,
-                                color: Colors.deepPurpleAccent,
-                                title: "Contact",
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Flexible(
-                              child: _attachWindowItem(
-                                icon: Icons.bar_chart,
-                                color: tabColor,
-                                title: "Poll",
-                              ),
-                            ),
-                            Flexible(
-                              child: _attachWindowItem(
-                                icon: Icons.gif_box_outlined,
-                                color: Colors.indigoAccent,
-                                title: "Camera",
-                                onTap: () {},
-                              ),
-                            ),
-                            Flexible(
-                              child: _attachWindowItem(
-                                icon: Icons.video_call_rounded,
-                                color: Colors.lightGreen,
-                                title: "Video",
-                                onTap: () {},
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
+                  // attach window: show only when toggled and position above keyboard
+                  if (_isShowAttachWindow)
+                    Positioned(
+                      right: 15,
+                      left: 15,
+                      bottom: 65 + bottomInset,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 5,
+                          vertical: 15,
+                        ),
+                        decoration: BoxDecoration(
+                          color: bottomAttachContainerColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Flexible(
+                                    child: _attachWindowItem(
+                                      icon: Icons.document_scanner,
+                                      color: Colors.deepPurpleAccent,
+                                      title: "Document",
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: _attachWindowItem(
+                                      icon: Icons.camera_alt,
+                                      color: Colors.pinkAccent,
+                                      title: "Camera",
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: _attachWindowItem(
+                                      icon: Icons.insert_photo,
+                                      color: Colors.purpleAccent,
+                                      title: "Gallery",
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Flexible(
+                                    child: _attachWindowItem(
+                                      icon: Icons.headphones,
+                                      color: Colors.deepOrange,
+                                      title: "Audio",
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: _attachWindowItem(
+                                      icon: Icons.location_on,
+                                      color: Colors.green,
+                                      title: "Location",
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: _attachWindowItem(
+                                      icon: Icons.account_circle,
+                                      color: Colors.deepPurpleAccent,
+                                      title: "Contact",
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Flexible(
+                                    child: _attachWindowItem(
+                                      icon: Icons.bar_chart,
+                                      color: tabColor,
+                                      title: "Poll",
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: _attachWindowItem(
+                                      icon: Icons.gif_box_outlined,
+                                      color: Colors.indigoAccent,
+                                      title: "Camera",
+                                      onTap: () {},
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: _attachWindowItem(
+                                      icon: Icons.video_call_rounded,
+                                      color: Colors.lightGreen,
+                                      title: "Video",
+                                      onTap: () {},
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
-          ],
-        ),
+            );
+          }
+          return const Center(
+            child: CircularProgressIndicator(
+              color: tabColor,
+            ),
+          );
+        },
       ),
     );
   }
@@ -430,7 +482,9 @@ class _SingleChartPageState extends State<SingleChartPage> {
                     ),
                     isShowTick == true
                         ? Icon(
-                            isSeen == true ? Icons.done_all_rounded : Icons.done,
+                            isSeen == true
+                                ? Icons.done_all_rounded
+                                : Icons.done,
                             size: 16,
                             color: isSeen == true ? Colors.blue : greyColor,
                           )

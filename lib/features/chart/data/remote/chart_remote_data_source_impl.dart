@@ -215,6 +215,23 @@ Future<void> sendMessageBasedOnType(MessageEntity message) async {
     return myChatRef.snapshots().map((querySnapshot) => querySnapshot.docs.map((e) => ChartModel.fromSnapshot(e)).toList());
   }
 
+  @override
+  Future<void> seenMessageUpdate(MessageEntity message) async {
+    final messageRef = firestore
+        .collection(FirebaseCollectionConst.users)
+        .doc(message.senderUid)
+        .collection(FirebaseCollectionConst.myChat)
+        .doc(message.recipientUid)
+        .collection(FirebaseCollectionConst.messages)
+        .doc(message.messageId);
+
+    try {
+      await messageRef.update({"isSeen": true});
+    } catch (e) {
+      print("error occur while updating message status: $e");
+    }
+  }
+
  
  
 }

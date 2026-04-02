@@ -32,14 +32,25 @@ class MessageCubit extends Cubit<MessageState> {
   Future<void> getMessages({required MessageEntity message}) async {
     try {
       emit(MessageLoading());
+      print('📨 Loading messages for: ${message.senderUid} <-> ${message.recipientUid}');
 
       final streamResponse = getMessagesUseCase.call(message);
-      streamResponse.listen((messages) {
-        emit(MessageLoaded(messages: messages));
-      });
-    } on SocketException {
+      
+      streamResponse.listen(
+        (messages) {
+          print('✅ Loaded ${messages.length} messages');
+          emit(MessageLoaded(messages: messages));
+        },
+        onError: (error) {
+          print('❌ Stream error: $error');
+          emit(MessageFailure());
+        },
+      );
+    } on SocketException catch (e) {
+      print('❌ Socket Exception: $e');
       emit(MessageFailure());
-    } catch (_) {
+    } catch (e) {
+      print('❌ Error loading messages: $e');
       emit(MessageFailure());
     }
   }
