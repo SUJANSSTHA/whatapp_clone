@@ -157,12 +157,56 @@ class _ContactsPageState extends State<ContactsPage> {
                   },
                 );
               }
+              if(state is UserFailure) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline, color: Colors.red, size: 60),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Error loading contacts',
+                        style: TextStyle(color: textColor, fontSize: 16),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          BlocProvider.of<UserCubit>(context).getAllUsers();
+                        },
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                );
+              }
               return const Center(
                 child: CircularProgressIndicator(
                   color: tabColor,
                 ),
               );
             },
+          );
+        }
+        if(state is GetSingleUserFailure) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, color: Colors.red, size: 60),
+                const SizedBox(height: 20),
+                Text(
+                  'Error loading user data',
+                  style: TextStyle(color: textColor, fontSize: 16),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    BlocProvider.of<GetSingleUserCubit>(context).getSingleUser(uid: widget.uid);
+                  },
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
           );
         }
         return const Center(

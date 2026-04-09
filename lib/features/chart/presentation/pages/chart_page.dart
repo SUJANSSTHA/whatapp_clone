@@ -80,6 +80,32 @@ class _ChartPageState extends State<ChartPage> {
           },
         );
       }
+      if (state is ChatFailure) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, color: Colors.red, size: 60),
+              const SizedBox(height: 20),
+              Text(
+                'Error loading chats',
+                style: TextStyle(color: textColor, fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  BlocProvider.of<ChatCubit>(context).getMyChat(
+                    chat: ChatEntity(
+                      senderUid: widget.uid,
+                    ),
+                  );
+                },
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        );
+      }
       return const Center(
         child: CircularProgressIndicator(
           color: tabColor,

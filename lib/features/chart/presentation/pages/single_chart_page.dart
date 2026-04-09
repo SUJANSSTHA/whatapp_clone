@@ -1,15 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:swipe_to/swipe_to.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
-// import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
-// import 'dart:io';
-// import 'package:flutter/material.dart';
+import 'package:whatapp_clone/features/app/const/message_type_const.dart';
 import 'package:whatapp_clone/features/app/theme/style.dart';
+import 'package:whatapp_clone/features/chart/domain/entities/chat_entity.dart';
 import 'package:whatapp_clone/features/chart/domain/entities/message_enitiy.dart';
 import 'package:whatapp_clone/features/chart/presentation/cubit/message/message_cubit.dart';
 
@@ -120,6 +116,7 @@ class _SingleChartPageState extends State<SingleChartPage> {
             );
           }
           if (state is MessageLoaded) {
+            final messages = state.messages;
             return GestureDetector(
               onTap: () {
                 FocusScope.of(context).unfocus();
@@ -141,30 +138,66 @@ class _SingleChartPageState extends State<SingleChartPage> {
                     child: Column(
                       children: [
                         Expanded(
-                          child: ListView(
-                            children: [
-                              _messageLayout(
-                                message: "Hello, how are you?",
+                          child: ListView.builder(
+                            itemCount: messages.length,
+                            itemBuilder: (context, index) {
+                              final message = messages[index];
+                           if(message.senderUid == widget.message.senderUid){
+                              // return _messageLayout(
+                              //   message: message.text,
+                              //   alignment: Alignment.centerRight,
+                              //   createAt: message.createdAt,
+                              //   isSeen: message.isSeen,
+                              //   isShowTick: true,
+                              //   messageBgColor: messageColor,
+                              //   onLongPress: () {},
+                              //   onSwipe: () {},
+                              // );
+                              return _messageLayout(
+                                message: message.message,
                                 alignment: Alignment.centerRight,
-                                createAt: Timestamp.now(),
+                                createAt: message.createdAt,
                                 isSeen: false,
                                 isShowTick: true,
+                                //   isSeen: message.isSeen,
                                 messageBgColor: messageColor,
                                 onLongPress: () {},
                                 onSwipe: () {},
-                              ),
-                              _messageLayout(
-                                message: "Hello, I am fine?",
+                              );
+                           }else{
+                                 _messageLayout(
+                                message: message.message,
                                 alignment: Alignment.centerLeft,
-                                createAt: Timestamp.now(),
+                                createAt: message.createdAt,
                                 isSeen: false,
-                                isShowTick: true,
+                                isShowTick: false,
                                 messageBgColor: senderMessageColor,
                                 onLongPress: () {},
                                 onSwipe: () {},
-                              ),
+                              );
+                              
+                              }
+
+                            //  _messageLayout(
+                            //     message: "Hello",
+                            //     alignment: Alignment.centerRight,
+                            //     createAt: Timestamp.now(),
+                            //     isSeen: false,
+                            //     isShowTick: true,
+                            //     messageBgColor: messageColor,
+                            //     onLongPress: () {},
+                            //     onSwipe: () {},
+                            //   ),                         
+                              
+                         
+                            },
+                           
+                          ),
+                        ),
+
+                        /*
                               _messageLayout(
-                                message: "k gardai xas",
+                                message: "Hello",
                                 alignment: Alignment.centerRight,
                                 createAt: Timestamp.now(),
                                 isSeen: false,
@@ -172,9 +205,10 @@ class _SingleChartPageState extends State<SingleChartPage> {
                                 messageBgColor: messageColor,
                                 onLongPress: () {},
                                 onSwipe: () {},
-                              ),
+                              ),                         
+                              
                               _messageLayout(
-                                message: "Coding garira xu",
+                                message: "Hi",
                                 alignment: Alignment.centerLeft,
                                 createAt: Timestamp.now(),
                                 isSeen: false,
@@ -183,9 +217,9 @@ class _SingleChartPageState extends State<SingleChartPage> {
                                 onLongPress: () {},
                                 onSwipe: () {},
                               ),
-                            ],
-                          ),
-                        ),
+
+*/
+
                         Container(
                           padding: const EdgeInsets.only(
                             left: 10,
@@ -268,16 +302,19 @@ class _SingleChartPageState extends State<SingleChartPage> {
                                 ),
                               ),
                               SizedBox(width: 10),
-                              Container(
-                                height: 45,
-                                width: 45,
-                                decoration: BoxDecoration(
-                                  color: tabColor,
-                                  borderRadius: BorderRadius.circular(25),
-                                ),
-                                child: Icon(
-                                  _isDispalySendButton ? Icons.send : Icons.mic,
-                                  color: whiteColor,
+                              GestureDetector(
+                                onTap: _sendMessage,
+                                child: Container(
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                    color: tabColor,
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  child: Icon(
+                                    _isDispalySendButton ? Icons.send : Icons.mic,
+                                    color: whiteColor,
+                                  ),
                                 ),
                               ),
                             ],
@@ -535,5 +572,42 @@ class _SingleChartPageState extends State<SingleChartPage> {
         ],
       ),
     );
+  }
+
+  void _sendMessage(){
+    BlocProvider.of<MessageCubit>(context).sendMessage(
+ chat: ChatEntity(
+  senderUid: widget.message.senderUid,
+  recipientUid: widget.message.recipientUid,
+  senderName: widget.message.senderName,
+  recipientName: widget.message.recipientName,
+  senderProfile: widget.message.senderProfile,
+  recipientProfile: widget.message.recipientProfile,
+  createdAt: Timestamp.now(),
+  totalUnReadMessages: 0,
+ ),
+ message: MessageEntity(
+      senderUid: widget.message.senderUid,
+      recipientUid: widget.message.recipientUid,
+      senderName: widget.message.senderName,
+      recipientName: widget.message.recipientName,
+      messageType: MessageTypeConst.textMessage,
+      repliedTo: "",
+      repliedMessage: "",
+      repliedMessageType: "",
+      isSeen: false,
+      message: _textMessageController.text,
+      createdAt: Timestamp.now(),
+    ),
+    ).then( (value){
+        setState(() {
+        _textMessageController.clear();
+          _isDispalySendButton = false;
+        });
+     });
+    //  _textMessageController.clear();
+    //  setState(() {
+    //    _isDispalySendButton = false;
+    //  });
   }
 }
