@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -10,6 +11,8 @@ class ChatCubit extends Cubit<ChatState> {
 
   final GetMyChatUseCase getMyChatUseCase;
   final DeleteMyChatUseCase deleteMyChatUseCase;
+  StreamSubscription? _chatSubscription;
+
   ChatCubit({required this.getMyChatUseCase,
    required this.deleteMyChatUseCase})
     : super(ChatInitial());
@@ -19,9 +22,25 @@ class ChatCubit extends Cubit<ChatState> {
       emit(ChatLoading());
 
       final streamResponse = getMyChatUseCase.call(chat);
-      streamResponse.listen((chatContacts) {
-        emit(ChatLoaded(chatContacts: chatContacts));
-      });
+      
+      // Cancel any existing subscription
+      _chatSubscription?.cancel();
+      
+      _chatSubscription = streamResponse.listen(
+        (chatContacts) {
+          if (!isClosed) {
+            emit(ChatLoaded(chatContacts: chatContacts));
+          }
+        },
+        onError: (_) {
+          if (!isClosed) {
+            emit(ChatFailure());
+          }
+        },
+        onDone: () {
+          // Stream completed
+        },
+      );
 
     } on SocketException {
       emit(ChatFailure());
@@ -41,5 +60,11 @@ class ChatCubit extends Cubit<ChatState> {
     } catch (_) {
       emit(ChatFailure());
     }
+  }
+
+  @override
+  Future<void> close() {
+    _chatSubscription?.cancel();
+    return super.close();
   }
 }

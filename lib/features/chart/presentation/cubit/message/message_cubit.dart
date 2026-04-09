@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -20,6 +21,7 @@ class MessageCubit extends Cubit<MessageState> {
   final GetAllUsersUsercase getAllUsersUsercase;
   final GetMessagesUseCase getMessagesUseCase;
   final SeenMessageUpdateUseCase seenMessageUpdateUseCase;
+  StreamSubscription? _messageSubscription;
 
   MessageCubit(
       {required this.deleteMessageUseCase,
@@ -36,15 +38,23 @@ class MessageCubit extends Cubit<MessageState> {
 
       final streamResponse = getMessagesUseCase.call(message);
       
-      streamResponse.listen(
+      // Cancel any existing subscription
+      _messageSubscription?.cancel();
+      
+      _messageSubscription = streamResponse.listen(
         (messages) {
           print('✅ Loaded ${messages.length} messages');
-          emit(MessageLoaded(messages: messages));
+          if (!isClosed) {
+            emit(MessageLoaded(messages: messages));
+          }
         },
         onError: (error) {
           print('❌ Stream error: $error');
-          emit(MessageFailure());
+          if (!isClosed) {
+            emit(MessageFailure());
+          }
         },
+        cancelOnError: true,
       );
     } on SocketException catch (e) {
       print('❌ Socket Exception: $e');
@@ -87,12 +97,18 @@ class MessageCubit extends Cubit<MessageState> {
   }
 
 
-     MessageReplayEntity messageReplay = MessageReplayEntity();
+  MessageReplayEntity messageReplay = MessageReplayEntity();
 
   MessageReplayEntity get getMessageReplay => MessageReplayEntity();
 
   set setMessageReplay(MessageReplayEntity messageReplay) {
     this.messageReplay = messageReplay;
+  }
+
+  @override
+  Future<void> close() {
+    _messageSubscription?.cancel();
+    return super.close();
   }
 }
 
